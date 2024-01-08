@@ -30,4 +30,5 @@ void Board::printCurrBoard()
 		std::cout << m_currBoard[i];
 		std::cout << std::endl;
 	}
+	//djbvkjefbkefvkj
 }
