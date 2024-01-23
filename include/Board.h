@@ -1,24 +1,27 @@
 #pragma once
 
 #include "Location.h"
+#include "Mouse.h"
+#include "Cat.h"
+#include "io.h"
+#include "KeyDoor.h"
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
 
-
 class Board
 {
 public:
-	Board(std::string fileName);				//defaut constructor
-	int getBoardSize();							//fuction to get board size
-	void printCurrBoard();						//function to print board
-	//Location getLocations(int searchedPlayer);	//return the location of the searched player
-
+	Board(std::string fileName);
+	void ReadLevelGame(std::string fileName);
+	void printCurrBoard(Mouse m, std::vector<Cat> c, std::vector<Location> cheeses,
+		std::vector<Location> walls, KeyDoor keydoor, std::vector<Location> m_gift);	//function to print board;
+	int GetRows();
+	int GetCols();
+	std::vector< std::string> GetBoard();
 private:
-	int m_col;
-	int m_row;
-
 	std::vector<std::string> m_currBoard;
-
+	int m_rows;
+	int m_cols;
 };

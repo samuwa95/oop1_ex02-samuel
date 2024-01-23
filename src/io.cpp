@@ -8,13 +8,13 @@
 
 namespace
 {
-COORD locToCoord(const Location& loc)
-{
-    auto res = COORD{};
-    res.Y = static_cast<short>(loc.row);
-    res.X = static_cast<short>(loc.col);
-    return res;
-}
+    COORD locToCoord(const Location& loc)
+    {
+        auto res = COORD{};
+        res.Y = static_cast<short>(loc.row);
+        res.X = static_cast<short>(loc.col);
+        return res;
+    }
 }
 
 void Screen::resetLocation()
