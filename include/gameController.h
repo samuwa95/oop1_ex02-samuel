@@ -3,7 +3,6 @@
 #include "Location.h"
 #include "Mouse.h"
 #include "Cat.h"
-#include "KeyDoor.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -29,12 +28,11 @@ public:
 private:
     Board m_board;
     Mouse m_mouse;
-    KeyDoor m_keyDoor;
 
     std::vector<Location> m_cheeses;
     std::vector<Location> m_walls;
     std::vector<Cat> m_cats;
     std::vector<Location> m_gift;
-
-   //std::vector<KeyDoor> m_KeyDoor;
+    std::vector<Location> m_keylocations;
+    std::vector<Location> m_doorlocations;
 };

@@ -11,6 +11,6 @@ public:
 	void setDirection(int direction);
 	void moveObject(); // move mouse according to key press
 private:
-	Location m_location;
+	Location m_catlocation;
 	int m_direction;
 };

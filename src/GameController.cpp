@@ -24,18 +24,17 @@ void GameController::SaveObjectsLocations(std::string fileName)
 			case Characters::CHEESE: // keeps all the cheeses and their location in vector
 				m_cheeses.push_back(Location(i, j));
 				break;
-			case Characters::DOOR:
-				m_keyDoor.SetDoorLocation(Location(i, j));
-				break;
-			case Characters::KEY:
-				m_keyDoor.SetKeyLocation(Location(i, j));
-				break;
 			case Characters::GIFT://keeps all gift and their locations in vector
 				m_gift.push_back(Location(i, j));
 				break;
 			case Characters::WALL://keeps all wall(hagshtag) and their locations in vector
 				m_walls.push_back(Location(i, j));
 				break;
+			case Characters::KEY:
+				m_keylocations.push_back(Location(i, j));
+				break;
+			case Characters::DOOR:
+				m_doorlocations.push_back(Location(i, j));
 			}
 		}
 	}
@@ -60,13 +59,10 @@ void GameController::StartGame()
 			game = false;
 			break;
 		case 0:
-			m_board.printCurrBoard(m_mouse, m_cats, m_cheeses, m_walls, m_keyDoor, m_gift);
+			m_board.printCurrBoard(m_mouse, m_cats, m_cheeses, m_walls, m_keylocations, 
+				m_doorlocations,m_gift);
 			std::cout << std::endl << "Points:       Life: " << m_mouse.getLife() << std::endl;
-			/*for (size_t i = 0; i < m_cats.size(); i++)
-			{
-				std::cout << m_cats[i].getCatLocation().row << " "
-					<< m_cats[i].getCatLocation().col << std::endl;
-			}*/	
+			
 			MoveMouse();
 			// we move the cats in awtomatic
 			for (size_t i = 0; i < m_cats.size(); i++)
@@ -85,6 +81,44 @@ int GameController::CheckFinish() // 0 - continue to play, 1 - Mouse ate all che
 	if (m_mouse.getLife() == 0)
 		return 2; // lose situation
 	return 0; // contiue the game
+}
+
+void GameController::MoveMouse()
+{
+	int tav = _getch();
+	if (tav == Keys::SPECIAL_KEY || tav == 0)
+	{
+		tav = _getch();
+		Location locate = m_mouse.getMouseLocation();
+		switch (tav)
+		{
+		case SpecialKeys::UP:// TODO::CheckWallDoor whay not cheak wall
+			if (CheckWallDoor(locate.row - 1, locate.col))
+			{
+				m_mouse.moveObject(tav);
+			}
+			break;
+		case SpecialKeys::DOWN:
+			if (CheckWallDoor(locate.row + 1, locate.col))
+			{
+				m_mouse.moveObject(tav);
+			}
+			break;
+		case SpecialKeys::RIGHT:
+			if (CheckWallDoor(locate.row, locate.col + 1))
+			{
+				m_mouse.moveObject(tav);
+			}
+			break;
+		case SpecialKeys::LEFT:
+			if (CheckWallDoor(locate.row, locate.col - 1))
+			{
+				m_mouse.moveObject(tav);
+			}
+			break;
+		}
+		CheckMove();
+	}
 }
 
 void GameController::MoveCat(int index)
@@ -155,44 +189,6 @@ void GameController::MoveCat(int index)
 	m_cats[index].moveObject();
 }
 
-void GameController::MoveMouse()
-{
-	int tav = _getch();
-	if (tav == Keys::SPECIAL_KEY || tav == 0)
-	{
-		tav = _getch();
-		Location locate = m_mouse.getMouseLocation();
-		switch (tav)
-		{
-		case SpecialKeys::UP:// TODO::CheckWallDoor whay not cheak wall
-			if (CheckWallDoor(locate.row - 1, locate.col))
-			{
-				m_mouse.moveObject(tav);
-			}	
-			break;
-		case SpecialKeys::DOWN:
-			if (CheckWallDoor(locate.row + 1, locate.col))
-			{
-				m_mouse.moveObject(tav);
-			}
-			break;
-		case SpecialKeys::RIGHT:
-			if (CheckWallDoor(locate.row, locate.col + 1))
-			{
-				m_mouse.moveObject(tav);
-			}
-			break;
-		case SpecialKeys::LEFT:
-			if (CheckWallDoor(locate.row, locate.col - 1))
-			{
-				m_mouse.moveObject(tav);
-			}
-			break;
-		}
-		CheckMove();
-	}
-}
-
 void GameController::CheckMove()
 {
 	Location locate = m_mouse.getMouseLocation();
@@ -229,19 +225,14 @@ void GameController::CheckMove()
 		}
 	}
 	
-	// if we found the key
-	if (locate.row == m_keyDoor.GetKeyLocation().row &&
-		locate.col == m_keyDoor.GetKeyLocation().col)
+	for (size_t i = 0; i < m_keylocations.size(); i++)
 	{
-		m_keyDoor.UpdateKeyFoundStatus();
-	}
-	// if we found the key and if we found the location doar
-	if (m_keyDoor.GetFoundKey() && locate.row == m_keyDoor.GetDoorLocation().row &&
-		locate.col == m_keyDoor.GetDoorLocation().col)
-	{
-		m_keyDoor.UpdatedoorentryStatus();
-	}
-	
+		if (locate.row == m_keylocations[i].row && locate.col == m_keylocations[i].col)
+		{
+			m_keylocations.erase(m_keylocations.begin() + i);
+			break;
+		}
+	}	
 }
 
 void GameController::ClearScreen()
@@ -267,11 +258,21 @@ bool GameController::CheckWallDoor(int row, int col)
 		}
 	}
 
-	//check if the door is available to entry by found the key
-	if (!m_keyDoor.GetFoundKey() && row == m_keyDoor.GetDoorLocation().row
-		&& col == m_keyDoor.GetDoorLocation().col)
+	for (size_t i = 0; i < m_doorlocations.size(); i++)
 	{
-		return false;
+		if (row == m_doorlocations[i].row && col == m_doorlocations[i].col)
+		{
+			if (m_keylocations.size() == m_doorlocations.size())
+			{
+				return false;
+			}
+			else
+			{
+				m_doorlocations.erase(m_doorlocations.begin() + i);
+				break;
+			}
+		}
 	}
+	
 	return true;
 }

@@ -1,11 +1,11 @@
 #pragma once
 #include "Cat.h"
 
-Cat::Cat(Location loc) :m_location(loc), m_direction(SpecialKeys::UP) {}
+Cat::Cat(Location loc) :m_catlocation(loc), m_direction(SpecialKeys::UP) {}
 
 Location Cat::getCatLocation()
 {
-	return m_location;
+	return m_catlocation;
 }
 
 int Cat::getDirection()
@@ -23,16 +23,16 @@ void Cat::moveObject()
 	switch (m_direction)
 	{
 	case SpecialKeys::UP:
-		m_location.row--;
+		m_catlocation.row--;
 		break;
 	case SpecialKeys::DOWN:
-		m_location.row++;
+		m_catlocation.row++;
 		break;
 	case SpecialKeys::LEFT:
-		m_location.col--;
+		m_catlocation.col--;
 		break;
 	case SpecialKeys::RIGHT:
-		m_location.col++;
+		m_catlocation.col++;
 		break;
 	}
 }

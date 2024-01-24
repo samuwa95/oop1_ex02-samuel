@@ -4,7 +4,6 @@
 #include "Mouse.h"
 #include "Cat.h"
 #include "io.h"
-#include "KeyDoor.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -15,8 +14,9 @@ class Board
 public:
 	Board(std::string fileName);
 	void ReadLevelGame(std::string fileName);
-	void printCurrBoard(Mouse m, std::vector<Cat> c, std::vector<Location> cheeses,
-		std::vector<Location> walls, KeyDoor keydoor, std::vector<Location> m_gift);	//function to print board;
+	void printCurrBoard(Mouse mouse, std::vector<Cat> cat, std::vector<Location> cheeses,
+		std::vector<Location> walls, std::vector<Location> keys,
+		std::vector<Location> doors, std::vector<Location> gift);	//function to print board;
 	int GetRows();
 	int GetCols();
 	std::vector< std::string> GetBoard();

@@ -27,9 +27,9 @@ void Board::ReadLevelGame(std::string fileName)
 	}
 	m_cols = (int)m_currBoard[0].size();
 }
-
 void Board::printCurrBoard(Mouse mouse, std::vector<Cat> cat, std::vector<Location> cheeses,
-	std::vector<Location> walls, KeyDoor keydoor, std::vector<Location> gift)
+	std::vector<Location> walls, std::vector<Location> keys,
+	std::vector<Location> doors, std::vector<Location> gift)
 {
 	bool print = false;
 	for (int i = 0; i < m_rows; i++)
@@ -85,24 +85,27 @@ void Board::printCurrBoard(Mouse mouse, std::vector<Cat> cat, std::vector<Locati
 				print = true;
 			}
 
-			// print the key
-			if (!print && !keydoor.GetFoundKey() && i == keydoor.GetKeyLocation().row
-				&& j == keydoor.GetKeyLocation().col)
+			// print the keys
+			for (size_t k = 0; k < keys.size(); k++)
 			{
-				std::cout << (char)Characters::KEY;
-				print = true;
+				if (!print && i == keys[k].row
+					&& j == keys[k].col)
+				{
+					std::cout << (char)Characters::KEY;
+					print = true;
+				}
 			}
 
 			// print the door
-			if (!print && !keydoor.GetentryDoor() &&
-				i == keydoor.GetDoorLocation().row && j == keydoor.GetDoorLocation().col)
+			for (size_t k = 0; k < doors.size(); k++)
 			{
-				std::cout << (char)Characters::DOOR;
-				print = true;
+				if (!print && i == doors[k].row
+					&& j == doors[k].col)
+				{
+					std::cout << (char)Characters::DOOR;
+					print = true;
+				}
 			}
-	
-			
-			
 
 			if (!print)
 				std::cout << (char)Characters::SPACE;
