@@ -1,14 +1,9 @@
 #pragma once
 #include "GameController.h"
 
-GameController::GameController(std::string fileName) 
-	: m_board(fileName) // m_board is object of Board class - it's activate the constructor
-{
-	SaveObjectsLocations(fileName);
-}
-
 void GameController::SaveObjectsLocations(std::string fileName)
 {
+	m_board.ReadLevelGame(fileName);
 	for (int i = 0; i < m_board.GetRows(); i++)
 	{
 		for (int j = 0; j < m_board.GetCols(); j++)
@@ -30,10 +25,10 @@ void GameController::SaveObjectsLocations(std::string fileName)
 			case Characters::WALL://keeps all wall(hagshtag) and their locations in vector
 				m_walls.push_back(Location(i, j));
 				break;
-			case Characters::KEY:
+			case Characters::KEY: ////keeps all key and their locations in vector
 				m_keylocations.push_back(Location(i, j));
 				break;
-			case Characters::DOOR:
+			case Characters::DOOR: ////keeps all door and their locations in vector
 				m_doorlocations.push_back(Location(i, j));
 			}
 		}
@@ -42,36 +37,49 @@ void GameController::SaveObjectsLocations(std::string fileName)
 
 void GameController::StartGame()
 {
-	bool game = true;
-	do
+	std::vector<std::string> fileNames = { "Board.txt", "Board2.txt" , "Board3.txt" };
+	size_t level = 0; // count how many levels we finish
+	int status = -1;
+	while (level < fileNames.size())
 	{
-		Screen::resetLocation();
-		ClearScreen();
-		Screen::resetLocation();
-		switch (CheckFinish())
+		ClearVectors();
+		SaveObjectsLocations(fileNames[level]);
+		bool game = true;
+		while (game)
 		{
-		case 1:
-			std::cout << "The mouse ate all cheeses, Well done!" << std::endl;
-			game = false;
-			break;
-		case 2:
-			std::cout << "The mouse lost all lifes, Good luck next time!" << std::endl;
-			game = false;
-			break;
-		case 0:
-			m_board.printCurrBoard(m_mouse, m_cats, m_cheeses, m_walls, m_keylocations, 
-				m_doorlocations,m_gift);
-			std::cout << std::endl << "Points:       Life: " << m_mouse.getLife() << std::endl;
-			
-			MoveMouse();
-			// we move the cats in awtomatic
-			for (size_t i = 0; i < m_cats.size(); i++)
+			Screen::resetLocation();
+			ClearScreen();
+			Screen::resetLocation();
+			status = CheckFinish();
+			switch (status)
 			{
-				MoveCat((int)i);
+			case 1: // the mouse caught all the cheeses
+				game = false;
+				break;
+			case 2: // the cats got the mouse to lose his lifes
+				game = false;
+				break;
+			case 0:
+				m_board.printCurrBoard(m_mouse, m_cats, m_cheeses, m_walls, m_keylocations,
+					m_doorlocations, m_gift);
+				std::cout << std::endl << "Points:       Life: " << m_mouse.getLife() << std::endl;
+				MoveMouse();
+				for (size_t i = 0; i < m_cats.size(); i++)
+				{
+					MoveCat((int)i);
+				}
+				break;
 			}
-			break;
 		}
-	} while (game); // == true
+		if (status == 1)
+			level++;
+		else
+			break;
+	}
+	if (status == 1)
+		std::cout << "You've finish all levels, Well done!" << std::endl;
+	else
+		std::cout << "The mouse lost all lifes, Good luck next time!" << std::endl;
 }
 
 int GameController::CheckFinish() // 0 - continue to play, 1 - Mouse ate all cheeses, 2 - Mouse has lost all lifes
@@ -93,25 +101,25 @@ void GameController::MoveMouse()
 		switch (tav)
 		{
 		case SpecialKeys::UP:// TODO::CheckWallDoor whay not cheak wall
-			if (CheckWallDoor(locate.row - 1, locate.col))
+			if (CheckWall(locate.row - 1, locate.col))
 			{
 				m_mouse.moveObject(tav);
 			}
 			break;
 		case SpecialKeys::DOWN:
-			if (CheckWallDoor(locate.row + 1, locate.col))
+			if (CheckWall(locate.row + 1, locate.col))
 			{
 				m_mouse.moveObject(tav);
 			}
 			break;
 		case SpecialKeys::RIGHT:
-			if (CheckWallDoor(locate.row, locate.col + 1))
+			if (CheckWall(locate.row, locate.col + 1))
 			{
 				m_mouse.moveObject(tav);
 			}
 			break;
 		case SpecialKeys::LEFT:
-			if (CheckWallDoor(locate.row, locate.col - 1))
+			if (CheckWall(locate.row, locate.col - 1))
 			{
 				m_mouse.moveObject(tav);
 			}
@@ -133,25 +141,25 @@ void GameController::MoveCat(int index)
 	switch (direction)
 	{
 	case SpecialKeys::UP:
-		if (!CheckWallDoor(catlocation.row - 1, catlocation.col))
+		if (!CheckWall(catlocation.row - 1, catlocation.col))
 		{
 			checkDirection = false;
 		}
 		break;
 	case SpecialKeys::DOWN:
-		if (!CheckWallDoor(catlocation.row + 1, catlocation.col))
+		if (!CheckWall(catlocation.row + 1, catlocation.col))
 		{
 			checkDirection = false;
 		}
 		break;
 	case SpecialKeys::RIGHT:
-		if (!CheckWallDoor(catlocation.row, catlocation.col + 1))
+		if (!CheckWall(catlocation.row, catlocation.col + 1))
 		{
 			checkDirection = false;
 		}
 		break;
 	case SpecialKeys::LEFT:
-		if (!CheckWallDoor(catlocation.row, catlocation.col - 1))
+		if (!CheckWall(catlocation.row, catlocation.col - 1))
 		{
 			checkDirection = false;
 		}
@@ -219,12 +227,14 @@ void GameController::CheckMove()
 		if (locate.row == m_gift[i].row && locate.col == m_gift[i].col)
 		{
 			if (m_cats.size() > 0)
+			{
 				m_cats.erase(m_cats.end() - 1);
-			m_gift.erase(m_gift.begin() + i);
+				m_gift.erase(m_gift.begin() + i);
+			}	
 			break;
 		}
 	}
-	
+	// if we found the key we decrese the amount of dor
 	for (size_t i = 0; i < m_keylocations.size(); i++)
 	{
 		if (locate.row == m_keylocations[i].row && locate.col == m_keylocations[i].col)
@@ -237,9 +247,9 @@ void GameController::CheckMove()
 
 void GameController::ClearScreen()
 {
-	for (int i = 0; i < m_board.GetRows(); i++)
+	for (int i = 0; i < m_board.GetRows() * 2; i++)
 	{
-		for (int j = 0; j < m_board.GetCols(); j++)
+		for (int j = 0; j < m_board.GetCols() * 2; j++)
 		{
 			std::cout << " ";
 		}
@@ -247,7 +257,17 @@ void GameController::ClearScreen()
 	}
 }
 
-bool GameController::CheckWallDoor(int row, int col)
+void GameController::ClearVectors()
+{
+	m_cheeses.clear();
+	m_walls.clear();
+	m_cats.clear();
+	m_gift.clear();
+	m_keylocations.clear();
+	m_doorlocations.clear();
+}
+
+bool GameController::CheckWall(int row, int col)
 {
 	//check if there's a wll in mouse's way
 	for (size_t i = 0; i < m_walls.size(); i++)
@@ -258,6 +278,7 @@ bool GameController::CheckWallDoor(int row, int col)
 		}
 	}
 
+	//check if the cat in the same location on door
 	for (size_t i = 0; i < m_doorlocations.size(); i++)
 	{
 		if (row == m_doorlocations[i].row && col == m_doorlocations[i].col)
@@ -273,6 +294,5 @@ bool GameController::CheckWallDoor(int row, int col)
 			}
 		}
 	}
-	
 	return true;
 }

@@ -1,11 +1,6 @@
 #pragma once
 #include "Board.h"
 
-Board::Board(std::string fileName)
-{
-	ReadLevelGame(fileName);
-}
-
 void Board::ReadLevelGame(std::string fileName)
 {
 	m_rows = 0;
@@ -15,6 +10,8 @@ void Board::ReadLevelGame(std::string fileName)
 	{
 		exit(EXIT_FAILURE);
 	}
+
+	m_currBoard.clear();
 
 	auto line = std::string(); // arr dinamc
 	std::getline(file, line);	//Read a line
@@ -86,10 +83,9 @@ void Board::printCurrBoard(Mouse mouse, std::vector<Cat> cat, std::vector<Locati
 			}
 
 			// print the keys
-			for (size_t k = 0; k < keys.size(); k++)
+			for (size_t k = 0; !print && k < keys.size(); k++)
 			{
-				if (!print && i == keys[k].row
-					&& j == keys[k].col)
+				if (i == keys[k].row && j == keys[k].col)
 				{
 					std::cout << (char)Characters::KEY;
 					print = true;
@@ -97,10 +93,9 @@ void Board::printCurrBoard(Mouse mouse, std::vector<Cat> cat, std::vector<Locati
 			}
 
 			// print the door
-			for (size_t k = 0; k < doors.size(); k++)
+			for (size_t k = 0; !print && k < doors.size(); k++)
 			{
-				if (!print && i == doors[k].row
-					&& j == doors[k].col)
+				if (i == doors[k].row && j == doors[k].col)
 				{
 					std::cout << (char)Characters::DOOR;
 					print = true;

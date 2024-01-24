@@ -11,7 +11,7 @@
 
 int main()
 {
-	GameController game("Board1.txt");
+	GameController game;
 	game.StartGame();
 	return EXIT_SUCCESS;
 }

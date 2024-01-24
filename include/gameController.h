@@ -13,7 +13,6 @@
 class GameController
 {
 public:
-    GameController(std::string fileName);
     void SaveObjectsLocations(std::string fileName);
     void StartGame();
 
@@ -22,8 +21,8 @@ public:
     void MoveCat(int index);
     void CheckMove();
     void ClearScreen();
-
-    bool CheckWallDoor(int row, int col);
+    void ClearVectors();
+    bool CheckWall(int row, int col);
     
 private:
     Board m_board;
