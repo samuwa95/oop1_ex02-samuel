@@ -75,6 +75,7 @@ void GameController::StartGame()
 					MoveCat((int)i);
 				}
 				break;
+				//
 			}
 		}
 		if (status == 1)
