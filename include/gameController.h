@@ -13,6 +13,7 @@
 class GameController
 {
 public:
+    GameController();
     void SaveObjectsLocations(std::string fileName);
     void StartGame();
 

@@ -1,9 +1,14 @@
 #pragma once
 #include "GameController.h"
 
+GameController::GameController()
+{
+}
+
 void GameController::SaveObjectsLocations(std::string fileName)
 {
 	m_board.ReadLevelGame(fileName);
+
 	for (int i = 0; i < m_board.GetRows(); i++)
 	{
 		for (int j = 0; j < m_board.GetCols(); j++)
@@ -37,9 +42,10 @@ void GameController::SaveObjectsLocations(std::string fileName)
 
 void GameController::StartGame()
 {
-	std::vector<std::string> fileNames = { "Board.txt", "Board2.txt" , "Board3.txt" };
-	size_t level = 0; // count how many levels we finish
+	std::vector<std::string> fileNames = { "Board1.txt", "Board2.txt" , "Board3.txt" };
+	size_t  level = 0; // count how many levels we finish
 	int status = -1;
+
 	while (level < fileNames.size())
 	{
 		ClearVectors();
@@ -62,7 +68,7 @@ void GameController::StartGame()
 			case 0:
 				m_board.printCurrBoard(m_mouse, m_cats, m_cheeses, m_walls, m_keylocations,
 					m_doorlocations, m_gift);
-				std::cout << std::endl << "Points:       Life: " << m_mouse.getLife() << std::endl;
+				std::cout << "\nPoints: " << m_mouse.getPoints() << "    Life : " << m_mouse.getLife() << std::endl;
 				MoveMouse();
 				for (size_t i = 0; i < m_cats.size(); i++)
 				{
@@ -76,6 +82,7 @@ void GameController::StartGame()
 		else
 			break;
 	}
+
 	if (status == 1)
 		std::cout << "You've finish all levels, Well done!" << std::endl;
 	else
@@ -100,7 +107,7 @@ void GameController::MoveMouse()
 		Location locate = m_mouse.getMouseLocation();
 		switch (tav)
 		{
-		case SpecialKeys::UP:// TODO::CheckWallDoor whay not cheak wall
+		case SpecialKeys::UP:
 			if (CheckWall(locate.row - 1, locate.col))
 			{
 				m_mouse.moveObject(tav);
@@ -207,6 +214,7 @@ void GameController::CheckMove()
 		if (locate.row == m_cheeses[i].row && locate.col == m_cheeses[i].col)
 		{
 			m_cheeses.erase(m_cheeses.begin() + i);
+			m_mouse.addPoints(10);
 			break;
 		}
 	}
@@ -230,6 +238,7 @@ void GameController::CheckMove()
 			{
 				m_cats.erase(m_cats.end() - 1);
 				m_gift.erase(m_gift.begin() + i);
+				m_mouse.addPoints(5);
 			}	
 			break;
 		}
@@ -290,6 +299,7 @@ bool GameController::CheckWall(int row, int col)
 			else
 			{
 				m_doorlocations.erase(m_doorlocations.begin() + i);
+				m_mouse.addPoints(2);
 				break;
 			}
 		}

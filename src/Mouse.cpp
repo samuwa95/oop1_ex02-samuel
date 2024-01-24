@@ -1,9 +1,15 @@
 #pragma once
 #include "Mouse.h"
 
-Mouse::Mouse() {}
 
-Mouse::Mouse(Location loc) :m_Mouselocation(loc), m_life(3) {}
+Mouse::Mouse()
+{
+}
+
+Mouse::Mouse(Location loc, int life, int point)
+	:m_Mouselocation(loc), m_life(life), m_points(point)
+{
+}
 
 int Mouse::getLife()
 {
@@ -37,4 +43,14 @@ void Mouse::moveObject(int key)
 void Mouse::decreasedLife()
 {
 	m_life--;
+}
+
+int Mouse::getPoints()
+{
+	return m_points;
+}
+
+void Mouse::addPoints(int point)
+{
+	m_points += point;
 }
