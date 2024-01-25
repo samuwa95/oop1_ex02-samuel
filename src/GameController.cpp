@@ -38,6 +38,9 @@ void GameController::SaveObjectsLocations(std::string fileName)
 			}
 		}
 	}
+
+	m_numofcats = int(m_cats.size());// count the namber of cats
+	
 }
 
 void GameController::StartGame()
@@ -79,7 +82,10 @@ void GameController::StartGame()
 			}
 		}
 		if (status == 1)
+		{
 			level++;
+			m_mouse.addPoints(25 + m_numofcats * 5);
+		}
 		else
 			break;
 	}
@@ -257,14 +263,7 @@ void GameController::CheckMove()
 
 void GameController::ClearScreen()
 {
-	for (int i = 0; i < m_board.GetRows() * 2; i++)
-	{
-		for (int j = 0; j < m_board.GetCols() * 2; j++)
-		{
-			std::cout << " ";
-		}
-		std::cout << std::endl;
-	}
+	system("cls");
 }
 
 void GameController::ClearVectors()

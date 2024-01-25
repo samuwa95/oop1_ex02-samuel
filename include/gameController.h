@@ -28,6 +28,7 @@ public:
 private:
     Board m_board;
     Mouse m_mouse;
+    int m_numofcats;
 
     std::vector<Location> m_cheeses;
     std::vector<Location> m_walls;
