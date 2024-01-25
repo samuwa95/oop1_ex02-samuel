@@ -8,7 +8,6 @@ GameController::GameController()
 void GameController::SaveObjectsLocations(std::string fileName)
 {
 	m_board.ReadLevelGame(fileName);
-
 	for (int i = 0; i < m_board.GetRows(); i++)
 	{
 		for (int j = 0; j < m_board.GetCols(); j++)
@@ -19,7 +18,8 @@ void GameController::SaveObjectsLocations(std::string fileName)
 				m_cats.push_back(Cat(Location(i, j)));
 				break;
 			case Characters::MOUSE: // keeps the location of the mouse in the board
-				m_mouse = Mouse(Location(i, j));
+				//m_mouse = Mouse(Location(i, j));
+				m_mouse.setLocationMouse(Location(i, j));
 				break;
 			case Characters::CHEESE: // keeps all the cheeses and their location in vector
 				m_cheeses.push_back(Location(i, j));
@@ -49,6 +49,7 @@ void GameController::StartGame()
 	size_t  level = 0; // count how many levels we finish
 	int status = -1;
 
+	m_mouse = Mouse(Location(0, 0));
 	while (level < fileNames.size())
 	{
 		ClearVectors();

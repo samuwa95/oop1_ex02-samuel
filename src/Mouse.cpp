@@ -11,6 +11,11 @@ Mouse::Mouse(Location loc, int life, int point)
 {
 }
 
+void Mouse::setLocationMouse(Location loc)
+{
+	m_Mouselocation = loc;
+}
+
 int Mouse::getLife()
 {
 	return  m_life;

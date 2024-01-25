@@ -8,6 +8,7 @@ class Mouse
 public:
 	Mouse();
 	Mouse(Location loc, int life = 3, int point = 0);
+	void setLocationMouse(Location loc);
 	int getLife(); // getter function to return amount of life
 	Location getMouseLocation();
 	void moveObject(int key); // move mouse according to key press
